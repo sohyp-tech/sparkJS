@@ -208,5 +208,5 @@ function createSparkRouter(route) {
 }
 
 window.onload = () => {
-    console.info("You are using Spark.JS now, to know how to use go => https://sohyp-tech.github.io/sparkJS-documentaition");
+    console.info("You are using Spark.JS now, to know how to use go => https://sohyp-tech.github.io/sparkJS-documention");
 } 
