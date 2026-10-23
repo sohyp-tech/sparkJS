@@ -134,9 +134,25 @@ function Audio(props) {
 }
 
 function Video(props) {
-    return("video", props)
+    return el("video", props)
 }
 
+function Option(props) {
+    return el("option", props)
+}
+
+function Heading(num, props) {
+    const heading_num = `h${num}`
+    return el(heading_num, props)
+}
+
+function Breack() {
+    return el("br", {})
+}
+
+function Hr() {
+    return el("hr", {})
+}
 
 function getHTMLElement(tag_name, has_class_or_id) {
     if (has_class_or_id && !tag_name) {
