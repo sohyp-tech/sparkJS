@@ -58,7 +58,7 @@ Simply include  `index.js` file in your HTML document:
 
 Spark.JS provides simple reactive bindings via `textState` and `elementsState` using native JavaScript property descriptors.
 
-#See all thing in documentaition `https://sohyp-tech.github.io/sparkJS-documentaion`
+#See all thing in documentaition `https://sohyp-tech.github.io/sparkJS-documentaition`
 
 ## Thanks
 **Made With Love By Sohyp Khaled.  💙
