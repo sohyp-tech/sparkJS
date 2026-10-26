@@ -1,64 +1,224 @@
-# ⚡ Spark.JS
+# Spark.JS
 
-> A lightweight, zero-dependency, Flutter-inspired JavaScript UI framework for building fast and modern web applications with pure reactive state management and simple declarative syntax.
+Spark.JS is a lightweight front-end JavaScript framework with no dependencies and no build tooling required. It is designed for simple, fast UI creation and takes inspiration from Flutter’s component-oriented and layout-driven structure.
 
----
+## Project Description
 
-## ✨ Features
+Spark.JS helps you build web interfaces by creating DOM elements through small helper functions such as `el()`, `Container()`, `Row()`, `Column()`, `Text()`, `Button()`, and others. It works without installing packages, setting up bundlers, or writing a complex application scaffold.
 
-- 🚀 **Zero Dependencies & Zero Build Tools:** No Node.js, Webpack, Babel, or Vite required. Just link and code!
-- 💙 **Flutter-like Syntax:** Declarative layout components (`Column`, `Row`, `Container`, `Text`, etc.).
-- 🔄 **Reactive State Management:** Instant reactive data-binding using `textState` and `elementsState`.
-- 🗺️ **Built-in Hash Router:** Simple SPA routing out-of-the-box using `createSparkRouter`.
-- 🪶 **Ultra Lightweight:** Extremely small footprint, executing native DOM manipulations directly.
+The framework is intentionally minimal and focused on clarity, speed, and low setup overhead. Instead of a large ecosystem, Spark.JS gives you a small API for composing views, managing simple state, and handling basic routing.
 
----
+## Features
 
-## 💻 Quick Start
+- No external dependencies
+- No build tools required
+- Direct DOM element creation
+- Flutter-inspired layout patterns
+- Simple text state management with `textState()`
+- Simple HTML/element state management with `elementsState()`
+- Hash-based routing via `createSparkRouter()`
+- Utility helpers like `getHTMLElement()` and `mount()`
+- Suitable for small apps, prototypes, and lightweight UI experiments
 
-Simply include  `index.js` file in your HTML document:
+## Quick Start
+
+### 1) Include the script
 
 ```html
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Spark.JS App</title>
-</head>
-<body>
-
-    <!-- Container for mounting the Spark app -->
-    <div id="app"></div>
-
-    <script src="https://sohyp-tech.github.io/sparkJS/index.js"></script>
-    <script>
-        // Build your UI using Spark components
-        const appUI = Column({
-            style: "gap: 15px; margin-top: 50px;",
-            children: [
-                Text({ text: "Hello World from Spark.JS! ⚡", style: "font-size: 24px; font-weight: bold;" }),
-                Button({
-                    text: "Click Me",
-                    style: "padding: 10px 20px; cursor: pointer;",
-                    onClick: () => alert("Spark.JS is Awesome!")
-                })
-            ]
-        });
-
-        // Mount your app component
-        mount("#app", appUI);
-    </script>
-</body>
-</html>
+<script src="https://github.com/sohyp-tech/sparkJS/index.js"></script>
 ```
 
----
+### 2) Create an app container
 
-## ⚡ Reactive State Management Example
+```html
+<div id="app"></div>
+```
 
-Spark.JS provides simple reactive bindings via `textState` and `elementsState` using native JavaScript property descriptors.
+### 3) Build UI elements
 
-#See all thing in documentaition `https://sohyp-tech.github.io/sparkJS-documentaition`
+```javascript
+const app = document.getElementById("app");
 
-## Thanks
-**Made With Love By Sohyp Khaled.  💙
+const title = Text({
+  text: "Welcome to Spark.JS",
+  style: "font-size: 24px; color: #222;"
+});
+
+const button = Button({
+  text: "Click Me",
+  onClick: () => {
+    alert("Clicked!");
+  },
+  style: "padding: 10px 20px; background: #3b82f6; color: white; border: none; border-radius: 8px;"
+});
+
+app.appendChild(title);
+app.appendChild(button);
+```
+
+### 4) Use layout helpers
+
+```javascript
+const layout = Column({
+  style: "gap: 16px; min-height: 100vh;"
+});
+
+layout.appendChild(Text({ text: "Title" }));
+layout.appendChild(Button({ text: "Action" }));
+
+mount("#app", layout);
+```
+
+## Reactive State Management
+
+Spark.JS provides two lightweight state helpers: `textState()` and `elementsState()`.
+
+### textState()
+
+Use this when you want to track a text value and automatically update a DOM element.
+
+```javascript
+const state = { msg: "Hello" };
+const messageElement = Text({ text: state.msg });
+
+const reactiveText = textState(state, "msg", state.msg, messageElement);
+
+reactiveText.msg = "Text updated!";
+```
+
+When `state.msg` changes, the linked element's `textContent` is updated automatically.
+
+### elementsState()
+
+Use this when you want to track HTML content or a complex rendered block.
+
+```javascript
+const viewState = { html: "<b>Hello</b>" };
+const container = Container({ style: "padding: 20px;" });
+
+const reactiveHTML = elementsState(viewState, "html", viewState.html, container);
+
+reactiveHTML.html = "<b>HTML updated</b>";
+```
+
+When `html` changes, the linked element’s `innerHTML` is updated automatically.
+
+## Routing
+
+Spark.JS includes a simple hash-based router using `createSparkRouter()`.
+
+```javascript
+const routes = {
+  "/": () => {
+    mount("[sk-body]", Text({ text: "Home Page" }));
+  },
+  "/about": () => {
+    mount("[sk-body]", Text({ text: "About Page" }));
+  },
+  "/404": () => {
+    mount("[sk-body]", Text({ text: "Page Not Found" }));
+  }
+};
+
+createSparkRouter(routes);
+```
+
+Your app root should include the `sk-body` attribute:
+
+```html
+<div sk-body></div>
+```
+
+The router reads the current hash from `window.location.hash` and invokes the matching route.
+
+## Component Reference
+
+| Component | Purpose | Output HTML |
+| --- | --- | --- |
+| `Container` | General container | `div` |
+| `Column` | Vertical flex layout | `div` |
+| `Row` | Horizontal flex layout | `div` |
+| `Text` | Text block | `p` |
+| `Image` | Image | `img` |
+| `Header` | Page header | `header` |
+| `Nav` | Navigation area | `nav` |
+| `Footer` | Footer area | `footer` |
+| `Link` | Anchor link | `a` |
+| `TextField` | Text input | `input type="text"` |
+| `Checkbox` | Checkbox input | `input type="checkbox"` |
+| `Radio` | Radio button input | `input type="radio"` |
+| `TextArea` | Multi-line text area | `textarea` |
+| `Form` | Form container | `form` |
+| `Section` | Section block | `section` |
+| `Select` | Select dropdown | `select` |
+| `Button` | Button | `button` |
+| `Audio` | Audio element | `audio` |
+| `Video` | Video element | `video` |
+| `Option` | Select option | `option` |
+| `Heading(num, props)` | Header element (`h1` to `h6`) | `h${num}` |
+| `Break` | Line break | `br` |
+| `Hr` | Horizontal rule | `hr` |
+
+## el() Property Reference
+
+The core helper is `el(el_name, props)`. It accepts a tag name and a props object, and applies several common DOM attributes automatically.
+
+| Property | Description |
+| --- | --- |
+| `style` | CSS string applied to the element |
+| `src` | Source URL for media elements |
+| `to` | Maps to `href` for links |
+| `type` | Input type such as `text`, `checkbox`, or `radio` |
+| `className` | CSS class name mapped to `class` |
+| `alt` | Alternative text for images |
+| `children` | Array of child elements |
+| `text` | Text content inside the element |
+| `onClick` | Click event handler |
+| `onInput` | Input event handler |
+| `holder` | `placeholder` property |
+| `onChange` | Change event handler |
+| `onKey` | Keydown handler |
+| `onFocus` | Focus event handler |
+| `onBlur` | Blur event handler |
+
+### Example
+
+```javascript
+const input = TextField({
+  holder: "Type your name",
+  onInput: (e) => console.log(e.target.value),
+  style: "padding: 8px; border: 1px solid #ccc;"
+});
+```
+
+## What Spark.JS Does Not Do
+
+Spark.JS is intentionally minimal and lightweight. It is not meant to replace large frameworks like React, Vue, or Angular in every use case.
+
+It does not provide:
+
+- Advanced centralized state management
+- Virtual DOM diffing
+- Complex component lifecycle APIs
+- Server-side rendering (SSR)
+- Static site generation (SSG)
+- Full TypeScript-first architecture
+- Advanced routing systems
+- Full build pipeline tooling
+- Large ecosystem of plugins and infrastructure
+
+This makes Spark.JS better suited for small to medium projects, prototypes, educational apps, and simple interfaces where speed and simplicity matter more than framework complexity.
+
+## License
+
+This project is licensed under the MIT License.
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the “Software”), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+## Summary
+
+Spark.JS is a lightweight JavaScript framework for building front-end interfaces without dependencies or build tools. It focuses on small, fast, readable UI composition with a Flutter-inspired layout model, simple state updates, and basic hash-based routing. It is ideal for small apps, experiments, and lightweight interfaces where simplicity is a priority.
