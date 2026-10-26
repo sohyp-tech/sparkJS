@@ -146,7 +146,7 @@ function Heading(num, props) {
     return el(heading_num, props)
 }
 
-function Breack() {
+function Break() {
     return el("br", {})
 }
 
@@ -170,33 +170,35 @@ function mount(has_class_or_id, the_component) {
 
 
 function textState(object_name, key, text, el) {
-    let element = el
-    if (element) element.textContent = text
+    object_name[key] = text;
+    if (el) el.textContent = text;
 
-    Object.defineProperty(object_name, key, {
-        get() {
-            return text;
-        },
-        set(new_text) {
-            let txt = new_text
-            if (txt) element.textContent = new_text
+    const proxy = new Proxy(object_name, {
+        set(target, prop, value) {
+            target[prop] = value;
+            if (prop === key && el) {
+                el.textContent = value;
+            }
+            return true;
         }
     });
+    return proxy;
 }
 
 function elementsState(obj_name, key, code, element) {
-    el = element;
-    if (el) el.innerHTML = code
+    obj_name[key] = code;
+    if (element) element.innerHTML = code
 
-    Object.defineProperty(obj_name, key, {
-        get() {
-            return code;
-        },
-        set(new_els) {
-            let els = new_els
-            if (els) el.innerHTML = els
+    const proxy = new Proxy(obj_name, {
+        set(target, prop, value) {
+            target[prop] = value;
+            if (prop === key && element) {
+                element.innerHTML = value;
+            }
+            return true;
         }
     });
+    return proxy;
 }
 
 
@@ -207,7 +209,7 @@ function createSparkRouter(route) {
         const cont = route[current_path];
         const app = document.querySelector("[sk-body]")
         if (app) {
-            app.innerHTML = "";
+            app.replaceChildren();
         }
         if (cont) {
             cont(); 
