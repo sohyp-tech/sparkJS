@@ -1,32 +1,34 @@
 function el(el_name, props) {
     if ( el_name ) {
-        const el = document.createElement(el_name)
-        if (props) {
+        const el = document.createElement(el_name);
+        if (props && typeof props == "object") {
             if (props.style) {
-                el.setAttribute("style",props.style)
+                el.setAttribute("style",String(props.style));
             }
             if(props.src) {
-                el.setAttribute("src", props.src)
+                el.setAttribute("src", String(props.src));
             }
            if(props.to) {
-                el.setAttribute("href", props.to)
+                el.setAttribute("href", String(props.to));
             }
             if(props.type) {
-                el.setAttribute("type", props.type)
+                el.setAttribute("type", String(props.type));
             }
             if(props.className) {
-                el.setAttribute("class", props.className)
+                el.setAttribute("class", String(props.className));
             }
             if (props.alt) {
-                el.alt = props.alt
-            }
-            if (props.children) {
-                props.children.forEach(child => {
-                    if (child) el.appendChild(child)
-                });
+                el.setAttribute("alt", String(props.alt));
             }
             if(props.text) {
-                el.textContent = props.text
+                el.textContent = String(props.text);
+            }
+            if (props.children) {
+                const kids = [props.children].flat(Infinity);
+                for (const child of kids) {
+                    if (child == null) continue;
+                    el.appendChild(child instanceof Node ? child : String(child));
+                }
             }
             if (props.onClick) {
                 el.addEventListener("click", props.onClick)
@@ -95,18 +97,15 @@ function Link(props) {
 }
 
 function TextField(props) {
-    props.type = "text"
-    return el("input",props)
+    return el("input",{ ...props, type: props.type || "text" })
 }
 
 function Checkbox(props) {
-    props.type = "checkbox"
-    return el("input",props)
+    return el("input",{ ...props, type: props.type || "checkbox" })
 }
 
 function Radio(props) {
-    props.type = "radio"
-    return el("input",props)
+    return el("input",{ ...props, type: props.type || "radio" })
 }
 
 function TextArea(props) {
@@ -142,32 +141,45 @@ function Option(props) {
 }
 
 function Heading(num, props) {
+    if (num > 6 && num < 1) return;
     const heading_num = `h${num}`
     return el(heading_num, props)
 }
 
-function Break() {
-    return el("br", {})
+function Break(props) {
+    return el("br", props)
 }
 
-function Hr() {
-    return el("hr", {})
+function Hr(props) {
+    return el("hr", props)
 }
 
-function getHTMLElement(tag_name, has_class_or_id) {
-    if (has_class_or_id && !tag_name) {
-        const element = document.querySelector(has_class_or_id)
-        return element;
-    }  else {
-        const element = document.querySelector(tag_name)
-        return element;
+function getHTMLElement(el) {
+    return document.querySelector(el);
+}
+
+function mount(selector, the_component) {
+    const el = document.querySelector(selector)
+    if (!el) {
+        console.error(`Error: element ${selector} not found`);
+        return;
+    }
+    el.appendChild(the_component)
+}
+
+function setContent(element, content) {
+    if (content == null) {
+        element.replaceChildren();
+    } else if (typeof content === "string" || typeof content === "number") {
+        element.textContent = String(content);
+    } else if (content instanceof Node) {
+        element.replaceChildren(content);
+    } else if (Array.isArray(content)) {
+        element.replaceChildren(...content.filter(c => c instanceof Node));
+    } else {
+        element.textContent = String(content);
     }
 }
-
-function mount(has_class_or_id, the_component) {
-    document.querySelector(has_class_or_id).appendChild(the_component)
-}
-
 
 function textState(object_name, key, text, el) {
     object_name[key] = text;
@@ -187,13 +199,13 @@ function textState(object_name, key, text, el) {
 
 function elementsState(obj_name, key, code, element) {
     obj_name[key] = code;
-    if (element) element.innerHTML = code
+    if (element) setContent(element, code);
 
     const proxy = new Proxy(obj_name, {
         set(target, prop, value) {
             target[prop] = value;
             if (prop === key && element) {
-                element.innerHTML = value;
+                setContent(element, value);
             }
             return true;
         }
@@ -207,7 +219,11 @@ function createSparkRouter(route) {
     function render() {
         const current_path = window.location.hash.slice(1) || "/";
         const cont = route[current_path];
-        const app = document.querySelector("[sk-body]")
+        const app = document.querySelector("[sk-body]");
+        if (!app) {
+            console.error("Router: [sk-body] not found");
+            return;
+        }
         if (app) {
             app.replaceChildren();
         }
