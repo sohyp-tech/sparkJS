@@ -181,7 +181,7 @@ function setContent(element, content) {
     }
 }
 
-function textState(object_name, key, text, el) {
+function TextStateController(object_name, key, text, el) {
     object_name[key] = text;
     if (el) el.textContent = text;
 
@@ -197,7 +197,7 @@ function textState(object_name, key, text, el) {
     return proxy;
 }
 
-function elementsState(obj_name, key, code, element) {
+function WidgetStateController(obj_name, key, code, element) {
     obj_name[key] = code;
     if (element) setContent(element, code);
 
