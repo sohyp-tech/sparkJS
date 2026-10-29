@@ -52,7 +52,7 @@ function Widget(el_name, props) {
                 el.onblur = (e) => props.onBlur(e);
             }
         }
-        return Widget;
+        return el;
     }
 }
 
@@ -236,7 +236,7 @@ function fetchURL(url, options = {}) {
         } else {
             fetchPromise = fetch(url)
         }
-        return fetchPromisث
+        return fetchPromise
         .then( res => res.json())
         .then(data => {
             if (thenFn) thenFn(data);
@@ -248,13 +248,14 @@ function fetchURL(url, options = {}) {
             throw err;
         })
 }
+}
 
 function openURL( url, { target = "_blank" } = {} ) {
     window.open(url, target, "noopener,noreferrer")
 }
 
 function showTost(text, delay = 2000) {
-    const tost = Widget({
+    const tost = Widget("div",{
         text: text,
         style: `position:fixed;
             bottom:20px;
