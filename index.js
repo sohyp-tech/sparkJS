@@ -1,4 +1,4 @@
-function Widget(el_name, props) {
+export function Widget(el_name, props) {
     if ( el_name ) {
         const el = document.createElement(el_name);
         if (props && typeof props == "object") {
@@ -56,117 +56,117 @@ function Widget(el_name, props) {
     }
 }
 
-function Container(props) {
+export function Container(props) {
     return Widget("div",props)
 }
 
-function Column(props) {
+export function Column(props) {
     const column_style = "display: flex;justify-content: center;align-items: center;flex-direction: column;"
     props.style = props.style ?  column_style + " " + props.style : column_style
     return Widget("div", props)
 }
 
-function Row(props) {
+export function Row(props) {
     const row_style = "display: flex;justify-content: center;align-items: center;flex-direction: row;"
     props.style = props.style ?  row_style + " " + props.style : row_style
     return Widget("div", props)
 }
 
-function Text(props) {
+export function Text(props) {
     return Widget("p",props)
 }
 
-function Image(props) {
+export function Image(props) {
     return Widget("img",props)
 }
 
-function Header(props) {
+export function Header(props) {
     return Widget("header",props)
 }
 
-function Nav(props) {
+export function Nav(props) {
     return Widget("nav",props)
 }
 
-function Footer(props) {
+export function Footer(props) {
     return Widget("footer",props)
 }
 
-function Link(props) {
+export function Link(props) {
     return Widget("a",props)
 }
 
-function TextField(props) {
+export function TextField(props) {
     return Widget("input",{ ...props, type: props.type || "text" })
 }
 
-function Checkbox(props) {
+export function Checkbox(props) {
     return Widget("input",{ ...props, type: props.type || "checkbox" })
 }
 
-function Radio(props) {
+export function Radio(props) {
     return Widget("input",{ ...props, type: props.type || "radio" })
 }
 
-function TextArea(props) {
+export function TextArea(props) {
     return Widget("textarea",props)
 }
 
-function Form(props) {
+export function Form(props) {
     return Widget("form",props)
 }
 
-function Section(props) {
+export function Section(props) {
     return Widget("section",props)
 }
 
-function Select(props) {
+export function Select(props) {
     return Widget("select",props)
 }
 
-function Button(props) {
+export function Button(props) {
     return Widget("button", props)
 }
 
-function Audio(props) {
+export function Audio(props) {
     return Widget("audio", props)
 }
 
-function Video(props) {
+export function Video(props) {
     return Widget("video", props)
 }
 
-function Option(props) {
+export function Option(props) {
     return Widget("option", props)
 }
 
-function Heading(num, props) {
-    if (num > 6 && num < 1) return;
+export function Heading(num, props) {
+    if (num > 6 || num < 1) return;
     const heading_num = `h${num}`
     return Widget(heading_num, props)
 }
 
-function Break(props) {
+export function Break(props) {
     return Widget("br", props)
 }
 
-function Hr(props) {
+export function Hr(props) {
     return Widget("hr", props)
 }
 
-function Icon(props) {
+export function Icon(props) {
     return Widget("span", props)
 }
 
-function IconByClassName(props) {
+export function IconByClassName(props) {
     return Widget("i", props)
 }
 
-function getHTMLElement(el) {
+export function getHTMLElement(el) {
     return document.querySelector(el);
 }
 
-function mount(selector, the_component) {
+export function mount(selector, the_component) {
     const el = document.querySelector(selector)
     if (!el) {
         console.error(`Error: element ${selector} not found`);
@@ -175,7 +175,7 @@ function mount(selector, the_component) {
     el.appendChild(the_component)
 }
 
-function setContent(element, content) {
+export function setContent(element, content) {
     if (content == null) {
         element.replaceChildren();
     } else if (typeof content === "string" || typeof content === "number") {
@@ -189,7 +189,7 @@ function setContent(element, content) {
     }
 }
 
-function TextStateController(object_name, key, text, el) {
+export function TextStateController(object_name, key, text, el) {
     object_name[key] = text;
     if (el) el.textContent = text;
 
@@ -205,7 +205,7 @@ function TextStateController(object_name, key, text, el) {
     return proxy;
 }
 
-function WidgetStateController(obj_name, key, code, element) {
+export function WidgetStateController(obj_name, key, code, element) {
     obj_name[key] = code;
     if (element) setContent(element, code);
 
@@ -221,7 +221,7 @@ function WidgetStateController(obj_name, key, code, element) {
     return proxy;
 }
 
-function fetchURL(url, options = {}) {
+export function fetchURL(url, options = {}) {
     if (options) {
         const thenFn = typeof options.thenFn === "function" ? options.thenFn : null;
         const catchErr = typeof options.catchErr === "function" ? options.catchErr : null;
@@ -247,14 +247,14 @@ function fetchURL(url, options = {}) {
             else console.error("fetchURL error:", err);
             throw err;
         })
-}
+    }
 }
 
-function openURL( url, { target = "_blank" } = {} ) {
+export function openURL( url, { target = "_blank" } = {} ) {
     window.open(url, target, "noopener,noreferrer")
 }
 
-function showTost(text, delay = 2000) {
+export function showTost(text, delay = 2000) {
     const tost = Widget("div",{
         text: text,
         style: `position:fixed;
@@ -267,11 +267,11 @@ function showTost(text, delay = 2000) {
             border-radius:20px;
             z-index:9999;`
     });
-    document.body.appendChild(toast);
-    setTimeout(() => toast.remove(), delay);
+    document.body.appendChild(tost);
+    setTimeout(() => tost.remove(), delay);
 }
-    
-function setDataToClipbord(text) {
+
+export function setDataToClipbord(text) {
     try {
         navigator.clipboard.writeText(text);
         showTost("copied!");
@@ -281,8 +281,8 @@ function setDataToClipbord(text) {
         return false;
     }
 }
-    
-function createSparkRouter(route) {
+
+export function createSparkRouter(route) {
     function render() {
         const current_path = window.location.hash.slice(1) || "/";
         const cont = route[current_path];
@@ -310,4 +310,4 @@ function createSparkRouter(route) {
 
 window.onload = () => {
     console.info("You are using Spark.JS now, to know how to use go => https://sohyp-tech.github.io/sparkJS-documentaition/");
-} 
+}
