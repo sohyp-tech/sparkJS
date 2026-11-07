@@ -161,7 +161,7 @@ function IconByClassName(props) {
     return Widget("i", props)
 }
 
-export function getHTMLElement(el) {
+function getHTMLElement(el) {
     return document.querySelector(el);
 }
 
